@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AE04 - Adrián Prieto Villena</title>
+    <link rel="stylesheet" href="styles/style.css" />
+  </head>
+  <body onload='getNamePokemon("https:\\//pokeapi.co/api/v2/pokemon")'>
+    <section id="infoPokemon"></section>
+    <button id="prevPage" onclick="changePage('previous')">Previous</button>
+    <button id="nextPage" onclick="changePage('next')">Next</button>
+  </body>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="scripts/services.js"></script>
+</html>
