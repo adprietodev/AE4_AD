@@ -1,3 +1,157 @@
+:root {
+  --picton-blue-50: #f1f8fe;
+  --picton-blue-100: #e3effb;
+  --picton-blue-200: #c0e0f7;
+  --picton-blue-300: #88c7f1;
+  --picton-blue-400: #3da5e6;
+  --picton-blue-500: #2190d6;
+  --picton-blue-600: #1372b6;
+  --picton-blue-700: #115b93;
+  --picton-blue-800: #124e7a;
+  --picton-blue-900: #144266;
+  --picton-blue-950: #0e2a43;
+}
+* {
+  font-family: "Play", sans-serif;
+  font-family: "Roboto", sans-serif;
+  font-family: "Source Code Pro", monospace;
+}
+
 body {
-  background-color: slategray;
+  background-color: var(--picton-blue-950);
+  color: var(--picton-blue-950);
+}
+
+h1 {
+  display: flex;
+  justify-content: center;
+  color: var(--picton-blue-100);
+}
+
+div {
+  font-size: 1.2rem;
+}
+
+.btns-section {
+  display: flex;
+  justify-content: center;
+}
+
+.btn {
+  width: 20rem;
+  padding: 0.5rem;
+  border-radius: 1.2rem;
+  background-color: white;
+  color: var(--picton-blue-700);
+  border-color: var(--picton-blue-700);
+  margin: 1.2rem;
+}
+
+.btn:hover {
+  background-color: var(--picton-blue-50);
+  color: var(--picton-blue-700);
+  border-color: var(--picton-blue-700);
+}
+
+.btn:active {
+  background-color: var(--picton-blue-100);
+  color: var(--picton-blue-700);
+  border-color: var(--picton-blue-700);
+}
+
+div h2 {
+  font-weight: bold;
+  font-size: 1.6rem;
+  margin-block-start: 0;
+}
+
+section#infoPokemon {
+  margin: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  justify-content: center;
+}
+
+.card {
+  max-width: 400px;
+  background-color: var(--picton-blue-200);
+  padding: 1.6rem;
+  border-radius: 1rem;
+  margin: 1.2rem;
+  justify-content: space-between;
+  border: none;
+}
+.card:hover {
+  background-color: var(--picton-blue-300);
+}
+
+.card:active {
+  background-color: var(--picton-blue-400);
+}
+
+.selected {
+  max-width: 400px;
+  padding: 1.6rem;
+  border-radius: 1rem;
+  margin: 1.2rem;
+  justify-content: space-between;
+  border: none;
+  background-color: var(--picton-blue-400);
+}
+
+.selected:hover {
+  background-color: var(--picton-blue-500);
+}
+
+.selected:active {
+  background-color: var(--picton-blue-600);
+}
+
+.body-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.body-card img.imgPoke {
+  margin: auto;
+  width: 250px;
+  height: 250px;
+}
+
+.body-card div {
+  display: flex;
+  flex-direction: column;
+  margin-top: 0.8rem;
+  background-color: var(--picton-blue-50);
+  padding: 0.4rem;
+  border-radius: 1rem;
+}
+strong {
+  flex: 1;
+  border-bottom: 1px solid black;
+}
+
+ul {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  margin-block-start: 0;
+  margin-block-end: 0;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  padding-inline-start: 0px;
+  justify-content: space-between;
+}
+
+ul li {
+  flex: 0 0 calc(33.33% - 10px); /* Tres elementos por fila */
+  margin-top: 6px;
+  text-align: center;
+}
+
+ul li img {
+  width: 100px;
+  height: 20px;
 }
