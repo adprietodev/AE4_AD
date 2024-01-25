@@ -1,6 +1,7 @@
 let namePokemons = [];
 
 let dataPokemons = [];
+let itemsSelected = []
 
 let nextPage = "";
 let previousPage = "";
@@ -43,7 +44,7 @@ const getInfoPokemon = () => {
             name: "",
             image: "",
             stats: [],
-            types: []
+            types: [],
         }
         axios
             .get(`https://pokeapi.co/api/v2/pokemon/${name}`)
@@ -92,7 +93,7 @@ const generateCard = () => {
 
         infoPokemonElement.innerHTML = dataPokemons.map(item => {
             return `
-            <button id="${item.id}" class="card">
+            <button id="${item.id}" class=${checkIsSelected(item.id)} onclick="selectCard(${item.id})">
               <h2 id="name">${primeraLetraMayuscula(item.name)}</h2>
               <div class="body-card">
                 <img class="imgPoke" src="${item.image}" alt="Imagen del pokemon" />
@@ -121,28 +122,74 @@ const generateCard = () => {
     } catch (error) {
         console.log("Error en generateCard:", error);
     }
+
 };
 
+const selectCard = (id) => {
+
+    const isSelected = itemsSelected.find(idSelected => idSelected.id === id);
+
+    if (isSelected) {
+        let tempArray = itemsSelected.filter((valor) => valor.id !== id);
+        itemsSelected = tempArray;
+
+        document.getElementById(`${id}`).setAttribute("class", "card");
+
+    } else {
+        const objSelected = dataPokemons.find(obj => obj.id === id);
+        itemsSelected.push(objSelected);
+        document.getElementById(`${id}`).setAttribute("class", "selected");
+    }
 
 
+}
 
-// const saveInfoDB = () => {
+const checkIsSelected = (id) => {
+    const isSelected = itemsSelected.find(idSelected => idSelected.id === id);
+    if (isSelected) {
+        return "selected";
+    } else {
+        return "card";
+    }
+}
 
-//     console.log(infoPokemon);
 
-//     $.ajax({
-//         type: "POST", //metodo POST para enviar datos al servidor
-//         url: "callDBPokemons.php", // ruta del fichero PHP del servidor
-//         data: {
-//             id: infoPokemon.id,
-//             name: infoPokemon.name,
-//             image: infoPokemon.image
-//         },
-//         success: (response) => { //resultado del PHP del servidor
-//             alert(response);
-//         },
-//         error: (xhr, status, error) => {
-//             alert("Error - " + xhr.responseText);
-//         }
-//     });
-// }
+const saveInfoDB = () => {
+
+
+    if (itemsSelected.length !== 0) {
+        let count = 0;
+        itemsSelected.map(item => {
+
+            $.ajax({
+                type: "POST", //metodo POST para enviar datos al servidor
+                url: "callDBPokemons.php", // ruta del fichero PHP del servidor
+                data: {
+                    id: item.id,
+                    name: item.name,
+                    image: item.image,
+                    hp: item.stats[0].base_stat,
+                    attack: item.stats[1].base_stat,
+                    defense: item.stats[2].base_stat,
+                    special_attack: item.stats[3].base_stat,
+                    special_defense: item.stats[4].base_stat,
+                    speed: item.stats[5].base_stat,
+                    type_01: item.types[0].type.name,
+                    type_02: (item.types.length === 1) ? null : item.types[1].type.name
+                },
+                success: (response) => { //resultado del PHP del servidor
+                    count++;
+                    if (count === itemsSelected.length) {
+                        alert(response);
+                    }
+                },
+                error: (xhr, status, error) => {
+                    count++;
+                    alert("El pokemon con la ID -> " + item.id + " ya ha sido insertado anteriormente en la base de datos.");
+                }
+            });
+        })
+    } else {
+        alert("No tienes nada seleccionado");
+    }
+}

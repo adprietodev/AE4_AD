@@ -16,15 +16,33 @@
   font-family: "Roboto", sans-serif;
   font-family: "Source Code Pro", monospace;
 }
+.icon {
+  width: 1.2em;
+  height: 1.2em;
+  vertical-align: -0.125em;
+  color: var(--picton-blue-900);
+}
 
 body {
   background-color: var(--picton-blue-950);
   color: var(--picton-blue-950);
 }
 
-h1 {
+header {
   display: flex;
   justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+
+header button {
+  margin-top: 0 !important;
+  margin-bottom: 1rem !important;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+h1 {
   color: var(--picton-blue-100);
 }
 
