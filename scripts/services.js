@@ -178,17 +178,26 @@ const saveInfoDB = () => {
                     type_02: (item.types.length === 1) ? null : item.types[1].type.name
                 },
                 success: (response) => { //resultado del PHP del servidor
+
                     count++;
+                    console.log(count, itemsSelected.length, count === itemsSelected.length);
                     if (count === itemsSelected.length) {
                         alert(response);
                     }
+
                 },
                 error: (xhr, status, error) => {
                     count++;
+                    console.log("Dento del error ", count, itemsSelected.length);
                     alert("El pokemon con la ID -> " + item.id + " ya ha sido insertado anteriormente en la base de datos.");
+
                 }
             });
+
+
         })
+
+
     } else {
         alert("No tienes nada seleccionado");
     }
