@@ -1,11 +1,16 @@
 let namePokemons = [];
 
 let dataPokemons = [];
+let dataPokemonsDB = [];
 let itemsSelected = []
 
 let nextPage = "";
 let previousPage = "";
 
+/**
+ * Metodo que utilizamos para coger los datos de la API de pokemon
+ * @param {*} url le pasamos una url con una paginación para mostar la cantidad de pokemons que hay
+ */
 const getNamePokemon = (url) => {
 
     axios
@@ -27,6 +32,11 @@ const getNamePokemon = (url) => {
             console.log(error);
         })
 }
+
+/**
+ * En este metodo lo llamamos cuando cogemos los datos para separar solo los nombre y posteriormente hacer otra llamada a la api
+ * @param {*} objPokemon le pasamos el objeto con datos de la primera llamada
+ */
 const getInfoApi = (objPokemon) => {
     let tempArr = objPokemon;
 
@@ -35,6 +45,9 @@ const getInfoApi = (objPokemon) => {
 
 }
 
+/**
+ * Metodo en el que despues de coger los nombres de los pokemons y almacenarlos llamamos de nuevo a la API para coger caracteristicas especiales.
+ */
 const getInfoPokemon = () => {
 
     namePokemons.map(name => {
@@ -62,6 +75,10 @@ const getInfoPokemon = () => {
     generateCard();
 }
 
+/**
+ * Metodo que utilizamos para realizar el cambio de pagina
+ * @param {*} page le pasamos si es la siguiente o anterior
+ */
 const changePage = (page) => {
     dataPokemons = [];
     if (page === "previous") {
@@ -71,10 +88,19 @@ const changePage = (page) => {
     }
 }
 
+/**
+ * Metodo que utilizamos para poner la primera letra mayuscula.
+ * @param {*} str le pasamos el nombre del pokemon
+ * @returns 
+ */
 function primeraLetraMayuscula(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
+/**
+ * Metodo que utilizamos para generar las cartas de los pokemons que cogemos de la api
+ * @returns retornamos posibles errores o saber si esta vacio.
+ */
 const generateCard = () => {
     try {
         console.log(dataPokemons.length);
@@ -125,6 +151,10 @@ const generateCard = () => {
 
 };
 
+/**
+ * Metodo que utilizamos para almacenar la carta seleccionada o para deselecionarla.
+ * @param {*} id le pasaamos el id de la carta.
+ */
 const selectCard = (id) => {
 
     const isSelected = itemsSelected.find(idSelected => idSelected.id === id);
@@ -144,6 +174,11 @@ const selectCard = (id) => {
 
 }
 
+/**
+ * Lo utilizamos para comprobar si la carta ha sido selecionada, cuando pasamos de pagina o no.
+ * @param {*} id lo comprobamos con el ID
+ * @returns retornamos si ha sido seleccionada o no.
+ */
 const checkIsSelected = (id) => {
     const isSelected = itemsSelected.find(idSelected => idSelected.id === id);
     if (isSelected) {
@@ -153,12 +188,14 @@ const checkIsSelected = (id) => {
     }
 }
 
-
+/**
+ * Metodo que utilizamos para postear la información en la base de datos.
+ */
 const saveInfoDB = () => {
 
-
     if (itemsSelected.length !== 0) {
-        let count = 0;
+        let countAdd = 0;
+        let countNotAdd = 0;
         itemsSelected.map(item => {
 
             $.ajax({
@@ -179,21 +216,22 @@ const saveInfoDB = () => {
                 },
                 success: (response) => { //resultado del PHP del servidor
 
-                    count++;
-                    console.log(count, itemsSelected.length, count === itemsSelected.length);
-                    if (count === itemsSelected.length) {
-                        alert(response);
+                    countAdd++;
+                    console.log("dentro success: " + (countAdd + countNotAdd));
+                    console.log("dentro success: " + itemsSelected.length);
+                    if ((countAdd + countNotAdd) === itemsSelected.length) {
+                        alert("Petición de post finalizada con " + itemsSelected.length + " pokemons seleccionados.\nPokemons añadidos en la base de datos son: " + countAdd + ".\nPokemons que seleccionados que ya estan dentro de la base de datos: " + countNotAdd);
                     }
-
                 },
                 error: (xhr, status, error) => {
-                    count++;
-                    console.log("Dento del error ", count, itemsSelected.length);
-                    alert("El pokemon con la ID -> " + item.id + " ya ha sido insertado anteriormente en la base de datos.");
-
+                    countNotAdd++;
+                    console.log("dentro de error" + (countAdd + countNotAdd));
+                    console.log("dentro de error" + itemsSelected.length);
+                    if ((countAdd + countNotAdd) === itemsSelected.length) {
+                        alert("Petición de post finalizada con " + itemsSelected.length + " pokemons seleccionados.\nPokemons añadidos en la base de datos son: " + countAdd + ".\nPokemons que seleccionados que ya estan dentro de la base de datos: " + countNotAdd);
+                    }
                 }
             });
-
 
         })
 
@@ -202,3 +240,106 @@ const saveInfoDB = () => {
         alert("No tienes nada seleccionado");
     }
 }
+let searchInput = document.getElementById("searchInputDB");
+
+/**
+ * Metodo que utilizamos para coger la información que tenemos guardada en la base de datos y funcione con el buscador.
+ */
+const getInfoDB = () => {
+    let pokemonName = searchInput.value;
+
+    if (pokemonName !== "") {
+        let url = `callDBPokemons.php?name=${pokemonName}`;
+
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                //console.log(data);
+                dataPokemonsDB = data;
+                generateDBCard();
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+            });
+    } else {
+        alert("No has escrito nada en el buscador");
+    }
+
+
+
+}
+
+/**
+ * Metodo que utilizamos para generar las cartas de los pokemons que hayamos buscado en nuestra base de datos.
+ * @returns retornamos en caso de error que no exista la sección.
+ */
+const generateDBCard = () => {
+
+    try {
+
+        const infoPokemonDB = document.getElementById("infoPokemonDB");
+        if (!infoPokemonDB) {
+            console.log("El elemento con ID 'infoPokemon' no existe");
+            return;
+        }
+
+        infoPokemonDB.innerHTML = dataPokemonsDB.map(item => {
+            return `
+            <button id="${item.id}_db" class=${checkIsSelected(item.id)} onclick="selectCard(${item.id})">
+              <h2 id="name">${primeraLetraMayuscula(item.name)}</h2>
+              <div class="body-card">
+                <img class="imgPoke" src="${item.image}" alt="Imagen del pokemon" />
+                <div>
+                  <strong>Stats:</strong>
+                  <ul class="stats">
+                    <li><i class="fa fa-heart"></i> ${item.stat_hp}</li>
+                    <li><i class="fa fa-hammer"></i> ${item.stat_attack}</li>
+                    <li><i class="fa fa-shield"></i> ${item.stat_defense}</li>
+                    <li><i class="fa fa-star"></i><i class="fa fa-heart"></i> ${item.stat_speed}</li>
+                    <li><i class="fa fa-star"></i><i class="fa fa-hammer"></i> ${item.stat_special_attack}</li>
+                    <li><i class="fa fa-star"></i><i class="fa fa-shield"></i> ${item.stat_special_defense}</li>
+                  </ul>
+                </div>
+                <div>
+                  <strong>Types:</strong>
+                  <ul class="type">
+                  <li><img src="imgs/${item.type_01}.jpg" /></li>
+                    ${item.type_02 != "" ?
+                    `<li><img src="imgs/${item.type_02}.jpg" /></li>` : ''}
+                  </ul>
+                </div>
+              </div>
+            </button>`;
+        }).join('');
+    } catch (error) {
+        console.log("Error en generateCard:", error);
+    }
+}
+
+searchInput.addEventListener("focus", function () {
+    document.getElementById("sectionBtns").style.display = "none";
+    document.getElementById("infoPokemon").style.display = "none";
+});
+
+searchInput.addEventListener("blur", function () {
+
+    if (searchInput.value === "") {
+        document.getElementById("sectionBtns").style.display = "flex";
+        document.getElementById("infoPokemon").style.display = "flex";
+
+        if (dataPokemonsDB.length >= 1) {
+            for (let i = 0; i < dataPokemonsDB.length; i++) {
+                document.getElementById(`${dataPokemonsDB[i].id}_db`).remove();
+            }
+        } else {
+            document.getElementById(`${dataPokemonsDB[0].id}_db`).remove();
+        }
+        dataPokemonsDB = [];
+    }
+
+});

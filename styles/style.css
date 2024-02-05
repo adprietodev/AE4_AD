@@ -50,7 +50,7 @@ div {
   font-size: 1.2rem;
 }
 
-.btns-section {
+section {
   display: flex;
   justify-content: center;
 }
@@ -172,4 +172,39 @@ ul li {
 ul li img {
   width: 100px;
   height: 20px;
+}
+
+#sectionSearch {
+  justify-items: center;
+  align-items: center;
+}
+input#searchInputDB {
+  width: 30rem;
+  padding: 0.5rem;
+  border-radius: 1.2rem 0 0 1.2rem;
+  background-color: white;
+  color: var(--picton-blue-700);
+  border-color: var(--picton-blue-700);
+  margin: 1.2rem 0 1.2rem 1.2rem;
+}
+
+#sectionSearch button {
+  width: 40px;
+  height: fit-content;
+  border-radius: 0 1.2rem 1.2rem 0;
+  background-color: white;
+  border-width: 0;
+  margin-right: 1.2rem;
+}
+
+#sectionSearch button:hover {
+  background-color: var(--picton-blue-50);
+  color: var(--picton-blue-700);
+  border-color: var(--picton-blue-700);
+}
+
+#sectionSearch button:active {
+  background-color: var(--picton-blue-100);
+  color: var(--picton-blue-700);
+  border-color: var(--picton-blue-700);
 }

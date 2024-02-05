@@ -28,4 +28,44 @@
 			echo "Error: " . $sql . "<br>" . mysqli_error($conexion);
 		}
 	}
+
+    if(isset($_GET["name"])) {
+        $name = $_GET["name"];
+        
+        $servidor = "localhost";
+        $usuario = "root";
+        $password = "";
+        $dbname = "pokemons";
+        $conexion = mysqli_connect($servidor, $usuario, $password, $dbname);
+        
+        if (!$conexion) {
+            echo "Error en la conexión a MySQL: " . mysqli_connect_error();
+            exit();
+        }
+        
+        $sql = "SELECT * FROM pokemonsCards WHERE name LIKE ?";
+		$stmt = $conexion->prepare($sql);
+
+		// Agregar el comodín % a la cadena de búsqueda
+		$searchTerm = '%' . $name . '%';
+
+		$stmt->bind_param("s", $searchTerm);
+		$stmt->execute();
+
+		$result = $stmt->get_result();
+        
+        if ($result->num_rows > 0) {
+			// Convertir resultados a un array asociativo y luego a formato JSON
+			$data = $result->fetch_all(MYSQLI_ASSOC);
+			echo json_encode($data);
+		} else {
+			echo json_encode(array('message' => 'No se encontraron resultados'));
+		}
+        
+        // Cerrar la conexión a la base de datos
+        mysqli_close($conexion);
+    } else {
+        echo "Parámetro 'nombre' no proporcionado en la URL.";
+    }
+
 ?>
